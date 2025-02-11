@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".Login">
+    tools:context=".Signup">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -28,12 +28,40 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LOG IN"
+                android:text="SIGN UP"
                 android:textColor="#5E4426"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:layout_marginBottom="32dp" />
+
+            <!-- Username Input Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:id="@+id/usernameLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Username"
+                    android:textColor="#5E4426"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/usernameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:background="@drawable/input_bg"
+                    android:padding="12dp"
+                    android:hint="Enter your username"
+                    android:textSize="16sp"
+                    android:textColor="#5E4426" />
+            </LinearLayout>
 
             <!-- Email Input Section -->
             <LinearLayout
@@ -68,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="16dp">
 
                 <TextView
                     android:id="@+id/passwordLabel"
@@ -91,12 +119,40 @@
                     android:textColor="#5E4426" />
             </LinearLayout>
 
-            <!-- Login Button -->
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/loginButton"
+            <!-- Confirm Password Input Section -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:id="@+id/confirmPasswordLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Confirm Password"
+                    android:textColor="#5E4426"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/confirmPasswordInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:background="@drawable/input_bg"
+                    android:padding="12dp"
+                    android:hint="Confirm your password"
+                    android:textSize="16sp"
+                    android:textColor="#5E4426" />
+            </LinearLayout>
+
+            <!-- Sign Up Button -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/signUpButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sign Up"
                 android:textColor="@android:color/white"
                 android:background="@drawable/rounded_button"
                 android:padding="12dp"
@@ -104,20 +160,7 @@
                 android:textAllCaps="false"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Forgot Password -->
-            <TextView
-                android:id="@+id/forgotPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Forgot Password?"
-                android:textColor="#FF7043"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp"
-                android:clickable="true" />
-
-            <!-- Sign Up Section -->
+            <!-- Login Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,20 +170,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Don't have an account?"
+                    android:text="Already have an account?"
                     android:textColor="#5E4426"
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/signUp"
+                    android:id="@+id/login"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" Sign Up"
+                    android:text=" Login"
                     android:textColor="#FF7043"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:clickable="true"
-                    android:onClick="Signup"/>
+                    android:onClick="login"/>
             </LinearLayout>
 
         </LinearLayout>
