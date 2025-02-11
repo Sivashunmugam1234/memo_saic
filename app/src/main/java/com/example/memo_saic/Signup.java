@@ -10,16 +10,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class Login extends AppCompatActivity {
+public class Signup extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_signup);
 
     }
-    public void Signup(View v){
-        Intent i=new Intent(this, Signup.class);
+    public void login(View v){
+        Intent i=new Intent(this, Login.class);
         startActivity(i);
     }
 }
