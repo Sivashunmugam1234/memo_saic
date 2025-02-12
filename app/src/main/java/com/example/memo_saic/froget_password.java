@@ -10,20 +10,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class Login extends AppCompatActivity {
+public class froget_password extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_froget_password);
 
     }
-    public void Signup(View v){
-        Intent i=new Intent(this, Signup.class);
-        startActivity(i);
-    }
-    public void forgot_password(View v){
-        Intent i=new Intent(this, froget_password.class);
+    public void login(View v){
+        Intent i=new Intent(this, Login.class);
         startActivity(i);
     }
 }
