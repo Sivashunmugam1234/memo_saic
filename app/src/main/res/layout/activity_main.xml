@@ -11,16 +11,7 @@
 
     <include layout="@layout/header"/>
 
-<!--    <Button-->
-<!--        android:id="@+id/btnLogin"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="50dp"-->
-<!--        android:text="LOGIN"-->
-<!--        android:backgroundTint="#6B8E23"-->
-<!--        android:textColor="#ffffff"-->
-<!--        android:textSize="16sp"-->
-<!--        android:fontFamily="sans-serif-medium"-->
-<!--        android:onClick="login"/>-->
+
 
 <!--    <GridLayout-->
 <!--        android:layout_width="match_parent"-->

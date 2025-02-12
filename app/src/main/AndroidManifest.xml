@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Memo_saic"
         tools:targetApi="31">
         <activity
+            android:name=".froget_password"
+            android:exported="false" />
+        <activity
             android:name=".Signup"
             android:exported="false" />
         <activity
