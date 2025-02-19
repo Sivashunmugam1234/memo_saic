@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/peach_background">
+
+    <!-- Main Image -->
+    <FrameLayout
+        android:id="@+id/polaroid_one"
+        android:layout_width="match_parent"
+        android:layout_height="496dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="#FFFFFF"
+        android:padding="12dp"
+        android:layout_margin="16dp">
+
+        <ImageView
+            android:id="@+id/image_one"
+            android:layout_width="wrap_content"
+            android:layout_height="422dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample" />
+
+        <TextView
+            android:id="@+id/caption_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginTop="8dp"
+            android:text="Sunset View"
+            android:textColor="#000000"
+            android:textSize="24sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/polaroid_one"
+        android:layout_width="match_parent"
+        android:layout_height="496dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="#FFFFFF"
+        android:padding="12dp"
+        android:layout_margin="16dp">
+
+        <ImageView
+            android:id="@+id/image_one"
+            android:layout_width="wrap_content"
+            android:layout_height="422dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample" />
+
+        <TextView
+            android:id="@+id/caption_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginTop="8dp"
+            android:text="Sunset View"
+            android:textColor="#000000"
+            android:textSize="24sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/polaroid_three"
+        android:layout_width="match_parent"
+        android:layout_height="496dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="#FFFFFF"
+        android:padding="12dp"
+        android:layout_margin="16dp">
+
+        <ImageView
+            android:id="@+id/image_three"
+            android:layout_width="wrap_content"
+            android:layout_height="422dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample" />
+
+        <TextView
+            android:id="@+id/caption_three"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginTop="8dp"
+            android:text="Sunset View"
+            android:textColor="#000000"
+            android:textSize="24sp" />
+    </FrameLayout>
+
+</LinearLayout>
+</ScrollView>
