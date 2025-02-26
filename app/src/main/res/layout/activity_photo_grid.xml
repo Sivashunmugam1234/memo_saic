@@ -4,12 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/peach_background">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/loginButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="calculator"
+        android:textColor="@android:color/white"
+        android:background="@drawable/rounded_button"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:layout_marginBottom="16dp"
+        android:onClick="calculator"/>
+
 
     <!-- Main Image -->
     <FrameLayout
@@ -41,7 +56,7 @@
     </FrameLayout>
 
     <FrameLayout
-        android:id="@+id/polaroid_one"
+        android:id="@+id/polaroid_two"
         android:layout_width="match_parent"
         android:layout_height="496dp"
         android:layout_gravity="center_horizontal"
@@ -51,14 +66,14 @@
         android:layout_margin="16dp">
 
         <ImageView
-            android:id="@+id/image_one"
+            android:id="@+id/image_two"
             android:layout_width="wrap_content"
             android:layout_height="422dp"
             android:scaleType="centerCrop"
             android:src="@drawable/sample" />
 
         <TextView
-            android:id="@+id/caption_one"
+            android:id="@+id/caption_two"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"

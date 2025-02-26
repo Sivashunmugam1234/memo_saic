@@ -1,6 +1,8 @@
 package com.example.memo_saic;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,5 +17,9 @@ public class photo_Grid extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_grid);
 
+    }
+    public void calculator(View v){
+        Intent i=new Intent(this, calculator.class);
+        startActivity(i);
     }
 }
