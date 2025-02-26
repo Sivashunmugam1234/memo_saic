@@ -12,9 +12,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Memo_saic"
+        android:text="Mem mosaic"
         android:textColor="#5E4426"
         android:textSize="24sp"
+        android:fontFamily="@font/UNICORN_REGULAR"
         android:textStyle="bold"
         android:gravity="center" />
 
