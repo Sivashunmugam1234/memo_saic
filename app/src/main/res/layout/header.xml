@@ -15,7 +15,7 @@
         android:text="Mem mosaic"
         android:textColor="#5E4426"
         android:textSize="24sp"
-        android:fontFamily="@font/UNICORN_REGULAR"
+        android:fontFamily="@font/unicorn_regular"
         android:textStyle="bold"
         android:gravity="center" />
 
