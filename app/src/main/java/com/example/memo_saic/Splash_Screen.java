@@ -32,7 +32,7 @@ public class Splash_Screen extends AppCompatActivity {
         logoText.startAnimation(fadeIn);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            startActivity(new Intent(Splash_Screen.this, MainActivity.class));
+            startActivity(new Intent(Splash_Screen.this, Login.class));
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
         }, SPLASH_DELAY);

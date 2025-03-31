@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,7 +18,12 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity {
+
+    private Button logout;
+
 
     private static final String CHANNEL_ID = "simplified_coding";
     private static final int NOTIFICATION_PERMISSION_CODE = 123;
@@ -26,15 +32,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        logout=findViewById(R.id.logoutButton);
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(MainActivity.this, "Logout Successful!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this,Login.class));
+            }
+        });
 
         // Register the notification channel
         createNotificationChannel();
     }
 
-    public void login(View v) {
-        Intent i = new Intent(this, Login.class);
-        startActivity(i);
-    }
 
     public void photogrid(View v) {
         Intent i = new Intent(this, photo_Grid.class);
