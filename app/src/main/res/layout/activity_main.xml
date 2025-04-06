@@ -19,7 +19,13 @@
 
     <include layout="@layout/header"/>
 
-    <GridLayout
+        <TextView
+            android:id="@+id/locationText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <GridLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
@@ -237,6 +243,7 @@
         </androidx.cardview.widget.CardView>
 
     </GridLayout>
+
     </LinearLayout>
 
     </ScrollView>
@@ -250,7 +257,8 @@
         android:layout_margin="16dp"
         app:srcCompat="@android:drawable/ic_menu_camera"
         android:contentDescription="Camera Button"
-        app:backgroundTint="@color/peach_background"/>
+        app:backgroundTint="@color/peach_background"
+        android:onClick="openCamera"/>
 
 
 </FrameLayout>
