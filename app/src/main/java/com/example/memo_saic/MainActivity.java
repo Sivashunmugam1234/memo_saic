@@ -153,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
                                         "Unknown District";
 
                 locationText.setText("District: " + district + "\nState: " + adminArea);
-
                 // Log everything for debugging
 //                Log.d("GeocoderDebug", "Full Address: " + fullAddress);
 //                Log.d("GeocoderDebug", "SubAdminArea (District): " + subAdminArea);
