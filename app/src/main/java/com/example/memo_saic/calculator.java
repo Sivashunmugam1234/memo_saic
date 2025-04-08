@@ -29,24 +29,19 @@ public class calculator extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculator);
 
-        // Initialize views
         dateInput1 = findViewById(R.id.dateInput1);
         dateInput2 = findViewById(R.id.dateInput2);
         resultText = findViewById(R.id.resultText);
         calculateButton = findViewById(R.id.calculateButton);
         checkCurrentDate = findViewById(R.id.checkCurrentDate);
 
-        // Initialize date format
         dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
-        // Set click listeners for date inputs
         dateInput1.setOnClickListener(v -> showDatePickerDialog(dateInput1));
         dateInput2.setOnClickListener(v -> showDatePickerDialog(dateInput2));
 
-        // Set listener for checkbox
         checkCurrentDate.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                // Set the second date to current date
                 Calendar calendar = Calendar.getInstance();
                 String currentDate = dateFormat.format(calendar.getTime());
                 dateInput2.setText(currentDate);
@@ -57,7 +52,6 @@ public class calculator extends AppCompatActivity {
             }
         });
 
-        // Set click listener for calculate button
         calculateButton.setOnClickListener(v -> calculateDateDifference());
     }
 
@@ -80,14 +74,12 @@ public class calculator extends AppCompatActivity {
         String date1Str = dateInput1.getText().toString();
         String date2Str = dateInput2.getText().toString();
 
-        // Check if dates are selected
         if (date1Str.equals("Select first date") || date2Str.equals("Select second date")) {
             Toast.makeText(this, "Please select both dates", Toast.LENGTH_SHORT).show();
             return;
         }
 
         try {
-            // Parse the date strings to Date objects
             Date date1 = dateFormat.parse(date1Str);
             Date date2 = dateFormat.parse(date2Str);
 
@@ -96,18 +88,14 @@ public class calculator extends AppCompatActivity {
                 return;
             }
 
-            // Calculate the difference in milliseconds
             long diffInMillis = Math.abs(date2.getTime() - date1.getTime());
 
-            // Convert to days
             long diffInDays = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
 
-            // Calculate years, months, and remaining days
             int years = (int) (diffInDays / 365);
             int months = (int) ((diffInDays % 365) / 30);
             int days = (int) ((diffInDays % 365) % 30);
 
-            // Format the result string
             StringBuilder resultBuilder = new StringBuilder();
 
             if (years > 0) {
@@ -124,7 +112,6 @@ public class calculator extends AppCompatActivity {
                 resultBuilder.append(days).append(days == 1 ? " day" : " days");
             }
 
-            // Display the result
             resultText.setText("Difference: " + resultBuilder.toString());
 
         } catch (ParseException e) {

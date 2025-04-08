@@ -32,17 +32,14 @@ public class Signup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance();
 
-        // Initialize EditTexts and Button
         emailEditText = findViewById(R.id.emailInput);
         passwordEditText = findViewById(R.id.passwordInput);
         usernameEditText = findViewById(R.id.usernameInput);
         confirmPasswordEditText =findViewById(R.id.confirmPasswordInput);
         registerButton = findViewById(R.id.signUpButton);
 
-        // Set up register button click listener
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,7 +61,6 @@ public class Signup extends AppCompatActivity {
         });
     }
 
-    //login activity
     public void login(View v) {
         Intent i = new Intent(this, Login.class);
         startActivity(i);
@@ -76,16 +72,13 @@ public class Signup extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Get current user
                             FirebaseUser firebaseUser = auth.getCurrentUser();
 
                             if (firebaseUser != null) {
-                                // Create a UserProfileChangeRequest to update username
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                         .setDisplayName(username)
                                         .build();
 
-                                // Update the user profile
                                 firebaseUser.updateProfile(profileUpdates)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
@@ -95,7 +88,6 @@ public class Signup extends AppCompatActivity {
                                                             "User registered successfully with username",
                                                             Toast.LENGTH_SHORT).show();
 
-                                                    // Optional: Navigate to next screen after successful registration
                                                     Intent intent = new Intent(Signup.this, Login.class);
                                                     startActivity(intent);
                                                     finish();
