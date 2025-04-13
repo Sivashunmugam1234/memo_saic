@@ -33,12 +33,16 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(libs.firebase.auth)
+
+    // Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+
     implementation(libs.credentials)
     implementation(libs.credentials.play.services.auth)
     implementation(libs.googleid)
@@ -47,6 +51,4 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.cloudinary:cloudinary-android:2.3.1")
-
-
 }
