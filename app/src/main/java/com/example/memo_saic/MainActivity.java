@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -35,6 +36,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.cloudinary.android.MediaManager;
+import com.cloudinary.android.callback.ErrorInfo;
+import com.cloudinary.android.callback.UploadCallback;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -43,8 +48,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,7 +67,10 @@ public class MainActivity extends AppCompatActivity {
 
     private Uri imageUri;
     private String currentPhotoPath;
+    private String cloudinaryImageUrl; // To store the Cloudinary URL
     private FusedLocationProviderClient fusedLocationClient;
+
+    private static boolean isMediaManagerInitialized = false;
 
     private String[] cameraPermissions = {
             Manifest.permission.CAMERA,
@@ -85,6 +95,22 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Logout Successful!", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(MainActivity.this, Login.class));
         });
+
+        // Initialize Cloudinary
+        Map config = new HashMap();
+        config.put("cloud_name", "de66ollgh");
+        config.put("api_key", "145498284129998");
+        config.put("api_secret", "KxvkoULLjvIdvz_-131PrcRTjsY");
+
+        if (!isMediaManagerInitialized) {
+            try {
+                MediaManager.init(this, config);
+                isMediaManagerInitialized = true;
+            } catch (IllegalStateException e) {
+                // Already initialized
+                isMediaManagerInitialized = true;
+            }
+        }
 
         createNotificationChannel();
 
@@ -153,13 +179,6 @@ public class MainActivity extends AppCompatActivity {
                                         "Unknown District";
 
                 locationText.setText("District: " + district + "\nState: " + adminArea);
-                // Log everything for debugging
-//                Log.d("GeocoderDebug", "Full Address: " + fullAddress);
-//                Log.d("GeocoderDebug", "SubAdminArea (District): " + subAdminArea);
-//                Log.d("GeocoderDebug", "Locality: " + locality);
-//                Log.d("GeocoderDebug", "SubLocality: " + subLocality);
-//                Log.d("GeocoderDebug", "AdminArea (State): " + adminArea);
-
             } else {
                 locationText.setText("Location info not available");
             }
@@ -168,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
             locationText.setText("Failed to get location info");
         }
     }
-
 
     public void photogrid(View v) {
         Intent i = new Intent(this, photo_Grid.class);
@@ -295,6 +313,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void galleryAddPic() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // For Android 10 and above, we already saved to the gallery during capture
+            // Just get the file path for upload
+            uploadToCloudinary(currentPhotoPath);
             return;
         }
 
@@ -340,9 +361,135 @@ public class MainActivity extends AppCompatActivity {
 
             currentPhotoPath = destFile.getAbsolutePath();
 
+            // Upload the saved image to Cloudinary
+            uploadToCloudinary(currentPhotoPath);
+
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(this, "Error saving image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void uploadToCloudinary(String filePath) {
+        // Show upload progress to user
+        Toast.makeText(this, "Uploading photo to cloud...", Toast.LENGTH_SHORT).show();
+
+        // For Android 10+, we need to handle the file path differently
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !filePath.startsWith("/")) {
+            // This is a relative path, we need to get the actual file
+            try {
+                // We'll use the imageUri that was set during camera launch
+                uploadToCloudinaryWithUri(imageUri);
+                return;
+            } catch (Exception e) {
+                Log.e("Cloudinary", "Error handling Android 10+ path: " + e.getMessage());
+                Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        // For older Android versions or when we have a direct file path
+        File fileToUpload = new File(filePath);
+        if (!fileToUpload.exists()) {
+            Toast.makeText(this, "File not found for upload", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        MediaManager.get().upload(fileToUpload.getAbsolutePath())
+                .unsigned("memosaic_preset") // Your unsigned upload preset
+                .callback(new UploadCallback() {
+                    @Override
+                    public void onStart(String requestId) {
+                        Log.d("Cloudinary", "Upload started");
+                    }
+
+                    @Override
+                    public void onProgress(String requestId, long bytes, long totalBytes) {
+                        double progress = (double) bytes / totalBytes;
+                        Log.d("Cloudinary", "Upload progress: " + (int) (progress * 100) + "%");
+                    }
+
+                    @Override
+                    public void onSuccess(String requestId, Map resultData) {
+                        cloudinaryImageUrl = resultData.get("secure_url").toString();
+                        Log.d("Cloudinary", "Uploaded successfully: " + cloudinaryImageUrl);
+
+                        // Show success message with the URL
+                        runOnUiThread(() -> {
+                            Toast.makeText(MainActivity.this,
+                                    "Upload successful! URL: " + cloudinaryImageUrl,
+                                    Toast.LENGTH_LONG).show();
+
+                            // Here you could store the URL in Firebase or your database
+                            // saveImageUrlToDatabase(cloudinaryImageUrl);
+                        });
+                    }
+
+                    @Override
+                    public void onError(String requestId, ErrorInfo error) {
+                        Log.e("Cloudinary", "Upload error: " + error.getDescription());
+                        runOnUiThread(() -> {
+                            Toast.makeText(MainActivity.this,
+                                    "Upload failed: " + error.getDescription(),
+                                    Toast.LENGTH_SHORT).show();
+                        });
+                    }
+
+                    @Override
+                    public void onReschedule(String requestId, ErrorInfo error) {
+                        Log.e("Cloudinary", "Upload rescheduled: " + error.getDescription());
+                    }
+                })
+                .dispatch();
+    }
+
+    private void uploadToCloudinaryWithUri(Uri fileUri) {
+        MediaManager.get().upload(fileUri)
+                .unsigned("memosaic_preset") // You should create this preset in your Cloudinary dashboard
+                .callback(new UploadCallback() {
+                    @Override
+                    public void onStart(String requestId) {
+                        Log.d("Cloudinary", "Upload started");
+                    }
+
+                    @Override
+                    public void onProgress(String requestId, long bytes, long totalBytes) {
+                        double progress = (double) bytes / totalBytes;
+                        Log.d("Cloudinary", "Upload progress: " + (int) (progress * 100) + "%");
+                    }
+
+                    @Override
+                    public void onSuccess(String requestId, Map resultData) {
+                        cloudinaryImageUrl = resultData.get("secure_url").toString();
+                        Log.d("Cloudinary", "Uploaded successfully: " + cloudinaryImageUrl);
+
+                        // Show success message with the URL
+                        runOnUiThread(() -> {
+                            Toast.makeText(MainActivity.this,
+                                    "Upload successful! URL: " + cloudinaryImageUrl,
+                                    Toast.LENGTH_LONG).show();
+
+                            // Here you could store the URL in Firebase or your database
+                            // saveImageUrlToDatabase(cloudinaryImageUrl);
+                        });
+                    }
+
+                    @Override
+                    public void onError(String requestId, ErrorInfo error) {
+                        Log.e("Cloudinary", "Upload error: " + error.getDescription());
+                        runOnUiThread(() -> {
+                            Toast.makeText(MainActivity.this,
+                                    "Upload failed: " + error.getDescription(),
+                                    Toast.LENGTH_SHORT).show();
+                        });
+                    }
+
+                    @Override
+                    public void onReschedule(String requestId, ErrorInfo error) {
+                        Log.e("Cloudinary", "Upload rescheduled: " + error.getDescription());
+                    }
+                })
+                .dispatch();
     }
 
     @Override
@@ -352,6 +499,13 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CAMERA_CAPTURE_CODE && resultCode == RESULT_OK) {
             galleryAddPic();
             Toast.makeText(this, "Photo saved to gallery", Toast.LENGTH_SHORT).show();
+
+            // Remove this code block to prevent double upload for Android 10+
+            /*
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                uploadToCloudinaryWithUri(imageUri);
+            }
+            */
         } else if (requestCode == CAMERA_CAPTURE_CODE && resultCode != RESULT_OK) {
             Toast.makeText(this, "Camera capture cancelled or failed", Toast.LENGTH_SHORT).show();
         }
@@ -419,5 +573,10 @@ public class MainActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .create()
                 .show();
+    }
+
+    // Method to get the Cloudinary URL
+    public String getCloudinaryImageUrl() {
+        return cloudinaryImageUrl;
     }
 }
