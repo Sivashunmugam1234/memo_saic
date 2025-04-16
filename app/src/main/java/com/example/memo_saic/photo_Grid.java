@@ -20,6 +20,7 @@ import java.util.List;
 
 public class photo_Grid extends AppCompatActivity implements PhotoAdapter.OnPhotoClickListener {
 
+    private static final String TAG = "photo_Grid";
     private String district;
     private String state;
     private RecyclerView photosRecyclerView;
@@ -55,12 +56,14 @@ public class photo_Grid extends AppCompatActivity implements PhotoAdapter.OnPhot
                     titleText += ", " + state;
                 }
                 locationTitleText.setText(titleText);
-            }
 
-            // Fetch images for this district
-            fetchImagesForDistrict();
+                // Fetch images for this district
+                fetchImagesForDistrict();
+            } else {
+                Toast.makeText(this, "No district information provided", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(this, "No district information provided", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Intent was null", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -75,41 +78,67 @@ public class photo_Grid extends AppCompatActivity implements PhotoAdapter.OnPhot
         }
 
         String currentUserId = auth.getCurrentUser().getUid();
+        Log.d(TAG, "Fetching images for district: " + district + " user: " + currentUserId);
 
         // Clear existing photos
         photoList.clear();
 
-        // Query Firestore for images from this district
-        db.collection("photos")
-                .whereEqualTo("userId", currentUserId)
-                .whereEqualTo("district", district)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        String imageUrl = doc.getString("imageUrl");
-                        String caption = doc.getString("caption");
-                        String timestamp = doc.getString("timestamp");
-
-                        if (imageUrl != null && !imageUrl.isEmpty()) {
-                            photoList.add(new PhotoData(imageUrl, caption, timestamp));
+        try {
+            // Query Firestore for images from this district
+            db.collection("photos")
+                    .whereEqualTo("district", district)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (queryDocumentSnapshots.isEmpty()) {
+                            Log.d(TAG, "No photos found for this district");
+                            Toast.makeText(photo_Grid.this,
+                                    "No photos found for " + district,
+                                    Toast.LENGTH_SHORT).show();
+                            return;
                         }
-                    }
 
-                    if (photoList.isEmpty()) {
-                        Toast.makeText(photo_Grid.this,
-                                "No photos found for " + district,
-                                Toast.LENGTH_SHORT).show();
-                    } else {
+                        Log.d(TAG, "Found " + queryDocumentSnapshots.size() + " photos");
+
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            try {
+                                String imageUrl = doc.getString("imageUrl");
+                                String docDistrict = doc.getString("district");
+                                String docState = doc.getString("state");
+                                String uploadDate = doc.getString("uploadDate");
+                                String userId = doc.getString("userId");
+
+                                Log.d(TAG, "Photo data: " + imageUrl + ", " + docDistrict + ", " + docState);
+
+                                if (imageUrl != null && !imageUrl.isEmpty()) {
+                                    // Create PhotoData without timestamp
+                                    PhotoData photoData = new PhotoData(
+                                            imageUrl,
+                                            docDistrict,
+                                            docState,
+                                            uploadDate,
+                                            userId
+                                    );
+                                    photoList.add(photoData);
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error parsing document: " + doc.getId(), e);
+                            }
+                        }
+
                         // Update the adapter
                         photoAdapter.notifyDataSetChanged();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("FirestoreError", "Error getting images", e);
-                    Toast.makeText(photo_Grid.this,
-                            "Failed to fetch images",
-                            Toast.LENGTH_SHORT).show();
-                });
+                        Log.d(TAG, "Adapter updated with " + photoList.size() + " items");
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error getting images", e);
+                        Toast.makeText(photo_Grid.this,
+                                "Failed to fetch images: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, "Exception during query setup", e);
+            Toast.makeText(this, "Error setting up query: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -120,11 +149,12 @@ public class photo_Grid extends AppCompatActivity implements PhotoAdapter.OnPhot
         // Optionally open a detail activity
         // Intent intent = new Intent(this, PhotoDetailActivity.class);
         // intent.putExtra("IMAGE_URL", photo.getImageUrl());
-        // intent.putExtra("CAPTION", photo.getCaption());
+        // intent.putExtra("DISTRICT", photo.getDistrict());
+        // intent.putExtra("STATE", photo.getState());
         // startActivity(intent);
     }
 
-    public void calculator(View v){
+    public void calculator(View v) {
         Intent i = new Intent(this, calculator.class);
         startActivity(i);
     }

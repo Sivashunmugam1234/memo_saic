@@ -1,6 +1,7 @@
 package com.example.memo_saic;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
 
+    private static final String TAG = "PhotoAdapter";
     private final Context context;
     private final List<PhotoData> photoList;
     private final OnPhotoClickListener listener;
@@ -41,19 +45,30 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
         PhotoData photo = photoList.get(position);
 
-        // Load image with Glide
-        Glide.with(context)
-                .load(photo.getImageUrl())
-                .placeholder(R.drawable.sample)
-                .error(R.drawable.sample)
-                .into(holder.photoImageView);
+        Log.d(TAG, "Binding photo at position " + position + ": " + photo.getImageUrl());
 
-        // Set caption
-        if (photo.getCaption() != null && !photo.getCaption().isEmpty()) {
-            holder.captionTextView.setText(photo.getCaption());
-        } else {
-            holder.captionTextView.setText("Photo " + (position + 1));
+        // Load image with Glide
+        try {
+            RequestOptions requestOptions = new RequestOptions()
+                    .placeholder(R.drawable.sample)
+                    .error(R.drawable.sample)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL);
+
+            Glide.with(context)
+                    .load(photo.getImageUrl())
+                    .apply(requestOptions)
+                    .into(holder.photoImageView);
+        } catch (Exception e) {
+            Log.e(TAG, "Error loading image: " + e.getMessage());
+            holder.photoImageView.setImageResource(R.drawable.sample);
         }
+
+        // Set caption/location text
+        String displayText = photo.getDistrict();
+        if (photo.getState() != null && !photo.getState().isEmpty()) {
+            displayText += ", " + photo.getState();
+        }
+        holder.captionTextView.setText(displayText);
 
         // Set click listener
         holder.itemView.setOnClickListener(v -> {
