@@ -38,7 +38,7 @@ public class photo_Grid extends AppCompatActivity implements PhotoAdapter.OnPhot
         locationTitleText = findViewById(R.id.locationTitleText);
 
         // Set up RecyclerView
-        photosRecyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // 2 columns
+        photosRecyclerView.setLayoutManager(new GridLayoutManager(this, 1)); // 2 columns
         photoList = new ArrayList<>();
         photoAdapter = new PhotoAdapter(this, photoList, this);
         photosRecyclerView.setAdapter(photoAdapter);
