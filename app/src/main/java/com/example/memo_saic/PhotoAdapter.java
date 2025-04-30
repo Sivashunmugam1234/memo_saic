@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
+
 import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
@@ -64,10 +65,32 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         }
 
         // Set caption/location text
-        String displayText = photo.getDistrict();
-        if (photo.getState() != null && !photo.getState().isEmpty()) {
-            displayText += ", " + photo.getState();
+        String displayText = "No date available";
+
+        if (photo.getUploadDate() != null && !photo.getUploadDate().isEmpty()) {
+            try {
+                // Parse the stored date string
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+                java.util.Date photoDate = sdf.parse(photo.getUploadDate());
+                java.util.Date currentDate = new java.util.Date();
+
+                // Calculate difference in days
+                long diffInMillies = Math.abs(currentDate.getTime() - photoDate.getTime());
+                long diffInDays = java.util.concurrent.TimeUnit.DAYS.convert(diffInMillies, java.util.concurrent.TimeUnit.MILLISECONDS);
+
+                if (diffInDays == 0) {
+                    displayText = "Today";
+                } else if (diffInDays == 1) {
+                    displayText = "Yesterday";
+                } else {
+                    displayText = diffInDays + " days ago";
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error parsing date: " + e.getMessage());
+                displayText = photo.getUploadDate(); // Fallback to original date string
+            }
         }
+
         holder.captionTextView.setText(displayText);
 
         // Set click listener
